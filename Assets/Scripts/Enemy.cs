@@ -27,7 +27,7 @@ public class Enemy : MonoBehaviour
 
     void Die()
     {
-        Debug.Log("Kuoli saatana");
+        Debug.Log("Vihollinen kuoli");
         transform.Rotate(0, 0, -90);
 
     }
@@ -36,5 +36,13 @@ public class Enemy : MonoBehaviour
     void Update()
     {
 
+    }
+
+    public enum EnemyState
+    {
+        Idle,
+        Aware,
+        Attacking,
+        Dead
     }
 }

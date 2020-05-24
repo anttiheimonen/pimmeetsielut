@@ -26,64 +26,72 @@ public class PlayerController : MonoBehaviour
 
     void InputToMovement ()
     {
-        float MoveHorizontal = Input.GetAxisRaw("Horizontal");
-        // float MoveVertical = Input.GetAxisRaw("Vertical");
-        if (MoveHorizontal > 0)
-        {
-            rb.AddForce(Vector3.right * acceleration);
-            spriteRenderer.flipX = false;
-        }
-        if (MoveHorizontal < 0)
-        {
-            rb.AddForce(Vector3.left * acceleration);
-            spriteRenderer.flipX = true;
-        }
+        if (playerState < PlayerState.Attacking) {
+            float MoveHorizontal = Input.GetAxisRaw("Horizontal");
+            // float MoveVertical = Input.GetAxisRaw("Vertical");
+            if (MoveHorizontal > 0)
+            {
+                rb.AddForce(Vector3.right * acceleration);
+                spriteRenderer.flipX = false;
+            }
+            if (MoveHorizontal < 0)
+            {
+                rb.AddForce(Vector3.left * acceleration);
+                spriteRenderer.flipX = true;
+            }
 
-        // if (MoveHorizontal == 0)
-        // {
-        //     rb.velocity = Vector2.zero;
-        //     // rb.velocity = Vector2.Lerp(gameObject.transform.position, )
-        // }
+            // if (MoveHorizontal == 0)
+            // {
+            //     rb.velocity = Vector2.zero;
+            //     // rb.velocity = Vector2.Lerp(gameObject.transform.position, )
+            // }
 
-        // Reduce movement speed if too high
-        if(rb.velocity.magnitude > maxSpeed)
-        {
-            rb.velocity = rb.velocity.normalized * maxSpeed;
-        }
+            // Reduce movement speed if too high
+            if(rb.velocity.magnitude > maxSpeed)
+            {
+                rb.velocity = rb.velocity.normalized * maxSpeed;
+            }
 
-        if (rb.velocity.magnitude == 0)
-        {
-            playerState = PlayerState.Idle;
-        }
-        else
-        {
-            playerState = PlayerState.Running;
+            if (rb.velocity.magnitude == 0)
+            {
+                playerState = PlayerState.Idle;
+            }
+            else
+            {
+                playerState = PlayerState.Running;
+            }
         }
 
         animator.SetFloat("Speed", rb.velocity.magnitude);
         // Debug.Log (rb.velocity.x);
     }
 
+
     private void Attack()
     {
         Debug.Log("Attacking!!!");
         animator.SetBool("IsAttacking", true);
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackArea.position, attackRange, enemyLayer);
-
         playerState = PlayerState.Attacking;
-        foreach(Collider2D enemy in hitEnemies)
-        {
-            Debug.Log (enemy);
-            enemy.GetComponent<Enemy>().takeHit();
 
-        }
     }
+
 
     public void AttackEnd ()
     {
         playerState = PlayerState.Idle;
         animator.SetBool("IsAttacking", false);
+    }
 
+
+    public void DealDamage ()
+    {
+        animator.SetBool("IsAttacking", false);
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackArea.position, attackRange, enemyLayer);
+        foreach(Collider2D enemy in hitEnemies)
+        {
+            Debug.Log (enemy);
+            enemy.GetComponent<Enemy>().takeHit();
+        }
     }
 
 
@@ -94,7 +102,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-         // Start is called before the first frame update
+    // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -102,6 +110,7 @@ public class PlayerController : MonoBehaviour
         playerState = PlayerState.Idle;
         // attackArea = transform.Find("AttackArea");
     }
+
 
     // Update is called once per frame
     void Update()
@@ -112,6 +121,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
     /// Draw an attack area for a weapon in editor
     void OnDrawGizmosSelected()
     {
@@ -119,6 +129,7 @@ public class PlayerController : MonoBehaviour
             return;
         Gizmos.DrawWireSphere(attackArea.position, attackRange);
     }
+
 
     public enum PlayerState
     {
