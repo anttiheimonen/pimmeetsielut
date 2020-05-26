@@ -7,36 +7,44 @@ public class PlayerController : MonoBehaviour
 {
 
     public float maxSpeed;
+    public int maxHealth;
     public float acceleration;
     // Vector2 move;
     // public GameObject player;
     public Transform attackArea;
     public float attackRange;
     public LayerMask enemyLayer;
-    Rigidbody2D rb;
+    Rigidbody2D rbody;
     SpriteRenderer spriteRenderer;
 
     public Animator animator;
     public PlayerState playerState;
+    float AttackDuration = 0.6f;
+    float AttackTimeToDamage = 0.4f;
+    int currentHealth;
+    // How long player is invulnerable to damage after taking a hit
+    public float InvulnerableTimer;
+    // While player is invulnerable, hits won't affect to character
+    bool IsInvulnerable;
 
-    void FixedUpdate ()
-    {
-        InputToMovement ();
-    }
 
     void InputToMovement ()
     {
-        if (playerState < PlayerState.Attacking) {
+        if (playerState == PlayerState.Dead || playerState == PlayerState.Uncontrollable)
+            return;     // Player cannot be controlled
+
+        if (playerState < PlayerState.Attacking)
+        {
             float MoveHorizontal = Input.GetAxisRaw("Horizontal");
             // float MoveVertical = Input.GetAxisRaw("Vertical");
             if (MoveHorizontal > 0)
             {
-                rb.AddForce(Vector3.right * acceleration);
+                rbody.AddForce(Vector3.right * acceleration);
                 spriteRenderer.flipX = false;
             }
             if (MoveHorizontal < 0)
             {
-                rb.AddForce(Vector3.left * acceleration);
+                rbody.AddForce(Vector3.left * acceleration);
                 spriteRenderer.flipX = true;
             }
 
@@ -47,37 +55,35 @@ public class PlayerController : MonoBehaviour
             // }
 
             // Reduce movement speed if too high
-            if(rb.velocity.magnitude > maxSpeed)
-            {
-                rb.velocity = rb.velocity.normalized * maxSpeed;
-            }
+            if(rbody.velocity.magnitude > maxSpeed)
+                rbody.velocity = rbody.velocity.normalized * maxSpeed;
 
-            if (rb.velocity.magnitude == 0)
-            {
+            if (rbody.velocity.magnitude == 0)
                 playerState = PlayerState.Idle;
-            }
             else
-            {
                 playerState = PlayerState.Running;
-            }
         }
 
-        animator.SetFloat("Speed", rb.velocity.magnitude);
+        animator.SetFloat("Speed", rbody.velocity.magnitude);
         // Debug.Log (rb.velocity.x);
     }
 
 
     private void Attack()
     {
+        if (playerState == PlayerState.Attacking)
+            return;     // Player is already attacking
         Debug.Log("Attacking!!!");
+        Invoke("DealDamage", AttackTimeToDamage);
+        Invoke("AttackEnd", AttackDuration);
         animator.SetBool("IsAttacking", true);
         playerState = PlayerState.Attacking;
-
     }
 
 
     public void AttackEnd ()
     {
+        // Debug.Log("Isku loppui");
         playerState = PlayerState.Idle;
         animator.SetBool("IsAttacking", false);
     }
@@ -85,30 +91,63 @@ public class PlayerController : MonoBehaviour
 
     public void DealDamage ()
     {
-        animator.SetBool("IsAttacking", false);
+        // animator.SetBool("IsAttacking", false);
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackArea.position, attackRange, enemyLayer);
         foreach(Collider2D enemy in hitEnemies)
         {
             Debug.Log (enemy);
-            enemy.GetComponent<Enemy>().takeHit();
+            enemy.GetComponent<EnemyController>().takeHit();
         }
     }
 
 
-    public void PrintEvent()
+    public void HandleIncomingHit()
     {
-        Debug.Log("PrintEvent");
-        playerState = PlayerState.Idle;
+        if (playerState == PlayerState.Dead)
+            return;   // Don't hurt the dead player
+
+        if (!IsInvulnerable)
+            TakeDamage();
+
+        if (currentHealth <= 0) {
+            Die();
+        }
+    }
+
+
+    // Reduces player's life and sets invulnerability
+    private void TakeDamage ()
+    {
+        currentHealth--;
+        Debug.Log("Pelaaja sai osuman");
+        IsInvulnerable = true;
+        Invoke("RemoveInvulnerable", InvulnerableTimer);
+    }
+
+
+    private void Die ()
+    {
+        playerState = PlayerState.Dead;
+        animator.SetBool("IsDead", true);
+        Debug.Log("Kuoli");
+    }
+
+
+    private void RemoveInvulnerable ()
+    {
+        IsInvulnerable = false;
     }
 
 
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        rbody = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         playerState = PlayerState.Idle;
-        // attackArea = transform.Find("AttackArea");
+        currentHealth = maxHealth;
+        IsInvulnerable = false;
+        InvokeRepeating("DebugPlayerState", 1, 1);
     }
 
 
@@ -119,6 +158,12 @@ public class PlayerController : MonoBehaviour
         {
             Attack();
         }
+    }
+
+
+    void FixedUpdate ()
+    {
+        InputToMovement ();
     }
 
 
@@ -140,5 +185,12 @@ public class PlayerController : MonoBehaviour
         Dead
     }
 
+
+    // Debug methods
+
+    private void DebugPlayerState ()
+    {
+        Debug.Log("Health " + currentHealth);
+    }
 
 }
