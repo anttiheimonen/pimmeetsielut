@@ -7,13 +7,15 @@ public class EnemyController : MonoBehaviour
 
     public int maxHealth = 2;
     public EnemyState enemyState;
-    int currentHealth;
     public Transform attackArea;
-    public float attackRange;     // Attacks damaging area
-    public float detectionArea;   // When player is in detection area enemy attacks
     public LayerMask playerLayer;
     public Animator animator;
-    float attackDuration = 1;
+    public BoxCollider2D boxCollider2D;
+    public float attackRange;     // Attacks damaging area
+    public float attackDuration;
+    public float cooldownDuration;
+    int currentHealth;
+    public float detectionArea;   // When player is in detection area enemy attacks
     public int maxAmmo;
     int ammo;
 
@@ -29,23 +31,40 @@ public class EnemyController : MonoBehaviour
 
     void attack()
     {
+        if (enemyState == EnemyState.Dead)
+            return;
+
         if (enemyState == EnemyState.Idle)
         {
+            animator.SetBool("IsAttacking", true);
             enemyState = EnemyState.Attacking;
             ammo--;
             Invoke("AttackEnd", attackDuration);
-        }
-        Collider2D[] playersHit = Physics2D.OverlapCircleAll(attackArea.position, attackRange, playerLayer);
-        foreach(Collider2D player in playersHit)
-        {
-            player.GetComponent<PlayerController>().HandleIncomingHit();
+            Collider2D[] playersHit = Physics2D.OverlapCircleAll(attackArea.position, attackRange, playerLayer);
+            foreach(Collider2D player in playersHit)
+            {
+                player.GetComponent<PlayerController>().HandleIncomingHit();
+            }
         }
     }
 
     public void AttackEnd ()
     {
+        if (enemyState != EnemyState.Dead)
+        {
+            enemyState = EnemyState.Cooldown;
+            Invoke("CooldownEnd", attackDuration);
+
+            animator.SetBool("IsAttacking", false);
+            animator.SetBool("IsCooldown", true);
+        }
+    }
+
+
+    public void CooldownEnd ()
+    {
+        animator.SetBool("IsCooldown", false);
         enemyState = EnemyState.Idle;
-        animator.SetBool("IsAttacking", false);
     }
 
 
@@ -64,25 +83,39 @@ public class EnemyController : MonoBehaviour
     {
         if (enemyState != EnemyState.Dead)
         {
+            animator.SetBool("IsDead", true);
             enemyState = EnemyState.Dead;
             Debug.Log("Vihollinen kuoli");
-            transform.Rotate(0, 0, -90);
+            boxCollider2D.enabled = false;
         }
+    }
+
+
+    private void Idle()
+    {
+        animator.SetBool("IsAttacking", false);
+    }
+
+
+    private bool PlayersIsOnAttackArea()
+    {
+        Collider2D[] playersHit = Physics2D.OverlapCircleAll(attackArea.position, detectionArea, playerLayer);
+        return (playersHit.Length > 0);
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        Collider2D[] playersHit = Physics2D.OverlapCircleAll(attackArea.position, detectionArea, playerLayer);
-        // Debug.Log("Pelaajia kantamalla: " + playersHit.Length);
-        if (playersHit.Length > 0)
+        if (enemyState == EnemyState.Dead)
+            return;
+
+        if (PlayersIsOnAttackArea())
         {
-            animator.SetBool("IsAttacking", true);
             attack();
         }
         else
         {
-            animator.SetBool("IsAttacking", false);
+            Idle();
         }
     }
 
@@ -90,7 +123,6 @@ public class EnemyController : MonoBehaviour
     public enum EnemyState
     {
         Idle,
-        Aware,
         Attacking,
         Cooldown,
         Dead

@@ -23,9 +23,11 @@ public class PlayerController : MonoBehaviour
     float AttackTimeToDamage = 0.4f;
     int currentHealth;
     // How long player is invulnerable to damage after taking a hit
-    public float InvulnerableTimer;
+    public float InvulnerableDuration;
     // While player is invulnerable, hits won't affect to character
     bool IsInvulnerable;
+    // How long knocback lasts
+    public float knockbackDuration;
 
 
     void InputToMovement ()
@@ -107,7 +109,10 @@ public class PlayerController : MonoBehaviour
             return;   // Don't hurt the dead player
 
         if (!IsInvulnerable)
+        {
             TakeDamage();
+            Knockback ();  // Knockback does not work yet
+        }
 
         if (currentHealth <= 0) {
             Die();
@@ -121,7 +126,21 @@ public class PlayerController : MonoBehaviour
         currentHealth--;
         Debug.Log("Pelaaja sai osuman");
         IsInvulnerable = true;
-        Invoke("RemoveInvulnerable", InvulnerableTimer);
+        Invoke("RemoveInvulnerable", InvulnerableDuration);
+    }
+
+
+    private void Knockback ()
+    {
+        playerState = PlayerState.Uncontrollable;
+        Invoke("KnockbackEnd", knockbackDuration);
+        rbody.AddForce(Vector3.up * 10, ForceMode2D.Impulse);
+    }
+
+
+        private void KnockbackEnd ()
+    {
+        playerState = PlayerState.Idle;
     }
 
 

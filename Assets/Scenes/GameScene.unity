@@ -370,7 +370,8 @@ MonoBehaviour:
     m_Bits: 256
   animator: {fileID: 1076237346}
   playerState: 0
-  InvulnerableTimer: 2
+  InvulnerableDuration: 1
+  knockbackDuration: 1
 --- !u!50 &1076237345
 Rigidbody2D:
   serializedVersion: 4
@@ -698,12 +699,15 @@ MonoBehaviour:
   maxHealth: 2
   enemyState: 0
   attackArea: {fileID: 311175040}
-  attackRange: 2.2
-  detectionArea: 2.5
   playerLayer:
     serializedVersion: 2
     m_Bits: 512
   animator: {fileID: 1636826070}
+  boxCollider2D: {fileID: 1636826065}
+  attackRange: 2.2
+  attackDuration: 1
+  cooldownDuration: 4
+  detectionArea: 2.5
   maxAmmo: 3
 --- !u!95 &1636826070
 Animator:
