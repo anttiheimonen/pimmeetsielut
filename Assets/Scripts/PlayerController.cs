@@ -8,9 +8,6 @@ public class PlayerController : MonoBehaviour
 
     public float maxSpeed;
     public int maxHealth;
-    public float acceleration;
-    // Vector2 move;
-    // public GameObject player;
     public Transform attackArea;
     public float attackRange;
     public LayerMask enemyLayer;
@@ -28,20 +25,27 @@ public class PlayerController : MonoBehaviour
     bool IsInvulnerable;
     // How long knocback lasts
     public float knockbackDuration;
+    public HealthBar healthBar;
 
 
     void InputToMovement ()
     {
         if (playerState == PlayerState.Dead || playerState == PlayerState.Uncontrollable)
+        {
             return;     // Player cannot be controlled
+        }
+
+        if (Input.GetButtonDown("Fire1"))
+        {
+            Attack();
+        }
 
         if (playerState < PlayerState.Attacking)
         {
+            // Read movement axis input
             float MoveHorizontal = Input.GetAxisRaw("Horizontal");
-            // float MoveVertical = Input.GetAxisRaw("Vertical");
             if (MoveHorizontal > 0)
             {
-                // rbody.AddForce(Vector3.right * acceleration);
                 rbody.velocity = Vector2.right * maxSpeed;
                 spriteRenderer.flipX = false;
             }
@@ -55,16 +59,12 @@ public class PlayerController : MonoBehaviour
                 rbody.velocity = Vector2.zero;
             }
 
-            // if (MoveHorizontal == 0)
-            // {
-            //     rb.velocity = Vector2.zero;
-            //     // rb.velocity = Vector2.Lerp(gameObject.transform.position, )
-            // }
-
             // Reduce movement speed if too high
+            // TODO: Is this still needed?
             if(rbody.velocity.magnitude > maxSpeed)
                 rbody.velocity = rbody.velocity.normalized * maxSpeed;
 
+            // Attack
             if (rbody.velocity.magnitude == 0)
                 playerState = PlayerState.Idle;
             else
@@ -72,7 +72,6 @@ public class PlayerController : MonoBehaviour
         }
 
         animator.SetFloat("Speed", rbody.velocity.magnitude);
-        // Debug.Log (rb.velocity.x);
     }
 
 
@@ -80,7 +79,8 @@ public class PlayerController : MonoBehaviour
     {
         if (playerState == PlayerState.Attacking)
             return;     // Player is already attacking
-        Debug.Log("Attacking!!!");
+
+        rbody.velocity = Vector2.zero;
         Invoke("DealDamage", AttackTimeToDamage);
         Invoke("AttackEnd", AttackDuration);
         animator.SetBool("IsAttacking", true);
@@ -90,7 +90,6 @@ public class PlayerController : MonoBehaviour
 
     public void AttackEnd ()
     {
-        // Debug.Log("Isku loppui");
         playerState = PlayerState.Idle;
         animator.SetBool("IsAttacking", false);
     }
@@ -102,7 +101,6 @@ public class PlayerController : MonoBehaviour
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackArea.position, attackRange, enemyLayer);
         foreach(Collider2D enemy in hitEnemies)
         {
-            Debug.Log (enemy);
             enemy.GetComponent<EnemyController>().takeHit();
         }
     }
@@ -128,11 +126,16 @@ public class PlayerController : MonoBehaviour
     // Reduces player's life and sets invulnerability
     private void TakeDamage ()
     {
+        // Cancel possible attack invokes
+        CancelInvoke("DealDamage");
+        CancelInvoke("AttackEnd");
         currentHealth--;
-        Debug.Log("Pelaaja sai osuman");
+        // Debug.Log("Pelaaja sai osuman");
         IsInvulnerable = true;
-        animator.SetBool("IsRecoveringFromHit", true);
+        animator.SetBool("IsOnKnockback", true);
         Invoke("RemoveInvulnerable", InvulnerableDuration);
+        UpdateHealthBar();
+
     }
 
 
@@ -147,7 +150,7 @@ public class PlayerController : MonoBehaviour
 
     private void KnockbackEnd ()
     {
-        animator.SetBool("IsRecoveringFromHit", false);
+        animator.SetBool("IsOnKnockback", false);
         playerState = PlayerState.Idle;
     }
 
@@ -160,37 +163,44 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    private void RemoveInvulnerable ()
+    private void RemoveInvulnerable() => IsInvulnerable = false;
+
+
+    private bool PlayerIsAlive() => (currentHealth > 0);
+
+
+    private void UpdateHealthBar()
     {
-        IsInvulnerable = false;
+        healthBar.SetHealth(currentHealth);
     }
 
 
-    // Start is called before the first frame update
+  // Start is called before the first frame update
     void Start()
     {
         rbody = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         playerState = PlayerState.Idle;
-        currentHealth = maxHealth;
         IsInvulnerable = false;
-        InvokeRepeating("DebugPlayerState", 1, 1);
+        currentHealth = maxHealth;
+        healthBar.SetMaxHealth(maxHealth);
+        // InvokeRepeating("DebugPlayerState", 1, 1);
     }
 
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Fire1"))
-        {
-            Attack();
-        }
+        if (!PlayerIsAlive())
+            return;
+
+        InputToMovement ();
     }
 
 
     void FixedUpdate ()
     {
-        InputToMovement ();
+
     }
 
 
