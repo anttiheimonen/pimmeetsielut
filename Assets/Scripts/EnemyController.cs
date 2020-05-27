@@ -34,18 +34,25 @@ public class EnemyController : MonoBehaviour
         if (enemyState == EnemyState.Dead)
             return;
 
+        // Start attack and invoke the end of attack
         if (enemyState == EnemyState.Idle)
         {
             animator.SetBool("IsAttacking", true);
             enemyState = EnemyState.Attacking;
             ammo--;
             Invoke("AttackEnd", attackDuration);
-            Collider2D[] playersHit = Physics2D.OverlapCircleAll(attackArea.position, attackRange, playerLayer);
-            foreach(Collider2D player in playersHit)
-            {
-                player.GetComponent<PlayerController>().HandleIncomingHit();
-            }
         }
+
+        if (enemyState != EnemyState.Attacking)
+            return;
+
+        // Deal damage to players that are in attackRange
+        Collider2D[] playersHit = Physics2D.OverlapCircleAll(attackArea.position, attackRange, playerLayer);
+        foreach(Collider2D player in playersHit)
+        {
+            player.GetComponent<PlayerController>().HandleIncomingHit();
+        }
+
     }
 
     public void AttackEnd ()
