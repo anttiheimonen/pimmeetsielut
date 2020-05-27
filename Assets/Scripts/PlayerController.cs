@@ -56,7 +56,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                rbody.velocity = Vector2.zero;
+                StopMovement();
             }
 
             // Reduce movement speed if too high
@@ -80,7 +80,7 @@ public class PlayerController : MonoBehaviour
         if (playerState == PlayerState.Attacking)
             return;     // Player is already attacking
 
-        rbody.velocity = Vector2.zero;
+        StopMovement();
         Invoke("DealDamage", AttackTimeToDamage);
         Invoke("AttackEnd", AttackDuration);
         animator.SetBool("IsAttacking", true);
@@ -142,6 +142,7 @@ public class PlayerController : MonoBehaviour
     private void TakeKnockback ()
     {
         playerState = PlayerState.Uncontrollable;
+        StopMovement();
         Invoke("KnockbackEnd", knockbackDuration);
         rbody.AddForce(new Vector2(-1, 1) * 5, ForceMode2D.Impulse);
         // rbody.AddForce(Vector3.up * 5, ForceMode2D.Impulse);
@@ -166,7 +167,9 @@ public class PlayerController : MonoBehaviour
     private void RemoveInvulnerable() => IsInvulnerable = false;
 
 
-    private bool PlayerIsAlive() => (currentHealth > 0);
+    private bool PlayerIsAlive() => currentHealth > 0;
+
+    private void StopMovement () => rbody.velocity = Vector2.zero;
 
 
     private void UpdateHealthBar()
