@@ -41,13 +41,18 @@ public class PlayerController : MonoBehaviour
             // float MoveVertical = Input.GetAxisRaw("Vertical");
             if (MoveHorizontal > 0)
             {
-                rbody.AddForce(Vector3.right * acceleration);
+                // rbody.AddForce(Vector3.right * acceleration);
+                rbody.velocity = Vector2.right * maxSpeed;
                 spriteRenderer.flipX = false;
             }
-            if (MoveHorizontal < 0)
+            else if (MoveHorizontal < 0)
             {
-                rbody.AddForce(Vector3.left * acceleration);
+                rbody.velocity = Vector2.left * maxSpeed;
                 spriteRenderer.flipX = true;
+            }
+            else
+            {
+                rbody.velocity = Vector2.zero;
             }
 
             // if (MoveHorizontal == 0)
