@@ -50,19 +50,23 @@ public class EnemyController : MonoBehaviour
 
     public void AttackEnd ()
     {
-        if (enemyState != EnemyState.Dead)
-        {
-            enemyState = EnemyState.Cooldown;
-            Invoke("CooldownEnd", attackDuration);
+        if (enemyState == EnemyState.Dead)
+            return;
 
-            animator.SetBool("IsAttacking", false);
-            animator.SetBool("IsCooldown", true);
-        }
+        enemyState = EnemyState.Cooldown;
+        Invoke("CooldownEnd", cooldownDuration);
+
+        animator.SetBool("IsAttacking", false);
+        animator.SetBool("IsCooldown", true);
+
     }
 
 
     public void CooldownEnd ()
     {
+        if (enemyState == EnemyState.Dead)
+            return;
+
         animator.SetBool("IsCooldown", false);
         enemyState = EnemyState.Idle;
     }
@@ -117,6 +121,7 @@ public class EnemyController : MonoBehaviour
         {
             Idle();
         }
+
     }
 
 

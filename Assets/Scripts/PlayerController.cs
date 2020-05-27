@@ -111,7 +111,7 @@ public class PlayerController : MonoBehaviour
         if (!IsInvulnerable)
         {
             TakeDamage();
-            Knockback ();  // Knockback does not work yet
+            TakeKnockback ();
         }
 
         if (currentHealth <= 0) {
@@ -126,20 +126,23 @@ public class PlayerController : MonoBehaviour
         currentHealth--;
         Debug.Log("Pelaaja sai osuman");
         IsInvulnerable = true;
+        animator.SetBool("IsRecoveringFromHit", true);
         Invoke("RemoveInvulnerable", InvulnerableDuration);
     }
 
 
-    private void Knockback ()
+    private void TakeKnockback ()
     {
         playerState = PlayerState.Uncontrollable;
         Invoke("KnockbackEnd", knockbackDuration);
-        rbody.AddForce(Vector3.up * 10, ForceMode2D.Impulse);
+        rbody.AddForce(new Vector2(-1, 1) * 5, ForceMode2D.Impulse);
+        // rbody.AddForce(Vector3.up * 5, ForceMode2D.Impulse);
     }
 
 
-        private void KnockbackEnd ()
+    private void KnockbackEnd ()
     {
+        animator.SetBool("IsRecoveringFromHit", false);
         playerState = PlayerState.Idle;
     }
 
