@@ -156,7 +156,7 @@ MonoBehaviour:
   boxCollider2D: {fileID: 8700892225155633725}
   attackRange: 2.2
   attackDuration: 1
-  cooldownDuration: 4
+  cooldownDuration: 2.5
   detectionArea: 2.5
   maxAmmo: 3
 --- !u!95 &8700892225155633722

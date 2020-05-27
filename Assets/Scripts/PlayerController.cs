@@ -144,7 +144,7 @@ public class PlayerController : MonoBehaviour
         playerState = PlayerState.Uncontrollable;
         StopMovement();
         Invoke("KnockbackEnd", knockbackDuration);
-        rbody.AddForce(new Vector2(-1, 1) * 5, ForceMode2D.Impulse);
+        rbody.AddForce(new Vector2(-1, 1) * 5, ForceMode2D.Impulse);  // TODO: Should this be in FixedUpdate() ?
         // rbody.AddForce(Vector3.up * 5, ForceMode2D.Impulse);
     }
 
