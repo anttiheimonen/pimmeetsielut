@@ -29,8 +29,6 @@ public class TentacleController : MonoBehaviour
     private void Remove ()
     {
         animator.StopPlayback();
-        Debug.Log("Tentacle Tuhottu");
-
         Destroy(gameObject);
     }
 
@@ -38,7 +36,6 @@ public class TentacleController : MonoBehaviour
     private void DealDamage ()
     {
         Collider2D[] playersHit = Physics2D.OverlapCircleAll(attackArea.position, attackRange, playerLayer);
-        Debug.Log(playersHit.Length);
         foreach(Collider2D player in playersHit)
         {
             player.GetComponent<PlayerController>().HandleIncomingHit();

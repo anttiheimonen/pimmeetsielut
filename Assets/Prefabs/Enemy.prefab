@@ -158,7 +158,7 @@ MonoBehaviour:
   attackDuration: 1
   cooldownDuration: 2.5
   detectionArea: 2.5
-  maxAmmo: 3
+  maxAmmo: 4
 --- !u!95 &8700892225155633722
 Animator:
   serializedVersion: 3
