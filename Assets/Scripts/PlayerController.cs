@@ -164,6 +164,12 @@ public class PlayerController : MonoBehaviour
     }
 
 
+    private void UseDoor()
+    {
+
+    }
+
+
     private void RemoveInvulnerable() => IsInvulnerable = false;
 
 
