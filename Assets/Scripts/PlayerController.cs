@@ -27,6 +27,8 @@ public class PlayerController : MonoBehaviour
     public float knockbackDuration;
     public HealthBar healthBar;
 
+    bool hasKey;
+
 
     void InputToMovement ()
     {
@@ -184,17 +186,32 @@ public class PlayerController : MonoBehaviour
     }
 
 
-  // Start is called before the first frame update
+    // Start is called before the first frame update
     void Start()
     {
         rbody = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         playerState = PlayerState.Idle;
         IsInvulnerable = false;
-        currentHealth = maxHealth;
+        currentHealth = GlobalObjectController.Instance.health;
+        maxHealth = GlobalObjectController.Instance.maxHealth;
         healthBar.SetMaxHealth(maxHealth);
+        UpdateHealthBar();
+        hasKey = false;
         // InvokeRepeating("DebugPlayerState", 1, 1);
     }
+
+    void OnDestroy()
+    {
+        SavePlayer();
+        Debug.Log("OnDestroy1");
+    }
+
+
+  public void FoundKey() => hasKey = true;
+
+
+  public bool HasKey() => hasKey;
 
 
     // Update is called once per frame
@@ -204,6 +221,12 @@ public class PlayerController : MonoBehaviour
             return;
 
         InputToMovement ();
+    }
+
+
+    public void SavePlayer()
+    {
+        GlobalObjectController.Instance.SetHealth(currentHealth);
     }
 
 

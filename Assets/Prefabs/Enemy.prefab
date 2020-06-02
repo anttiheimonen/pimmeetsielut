@@ -72,8 +72,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -487540069
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: -2834552850196481573, guid: 6fc66c021eec74942b4e71a3fde4dc04,
     type: 3}
@@ -151,7 +151,7 @@ MonoBehaviour:
   attackArea: {fileID: 8700892225977962092}
   playerLayer:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 4096
   animator: {fileID: 8700892225155633722}
   boxCollider2D: {fileID: 8700892225155633725}
   attackRange: 2.2

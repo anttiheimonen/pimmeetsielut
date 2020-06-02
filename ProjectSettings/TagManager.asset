@@ -15,12 +15,12 @@ TagManager:
   - 
   - 
   - Enemies
+  - Background
+  - Doors
+  - 
   - Player
   - 
-  - 
-  - 
-  - 
-  - 
+  - Effects
   - 
   - 
   - 
@@ -39,6 +39,15 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 2147412027
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Door
+    uniqueID: 3916171355
+    locked: 0
+  - name: Action
+    uniqueID: 3807427227
     locked: 0

@@ -7,13 +7,19 @@ public class DoorController : MonoBehaviour
 {
 
     public int LevelToLoad;
+    public Animator animator;
+    private float animationDuration = 1.5f;
 
     void OnTriggerEnter2D (Collider2D col)
     {
-        if(col.CompareTag("Player")) {
-            SceneManager.LoadScene(LevelToLoad);
-        }
+        if(!col.CompareTag("Player"))
+            return;
 
+        if (col.GetComponent<PlayerController>().HasKey())
+        {
+            animator.SetBool("HasKey", true);
+            Invoke("Unlock", animationDuration);
+        }
     }
 
     void OnTriggerStay2D (Collider2D col)
@@ -23,6 +29,12 @@ public class DoorController : MonoBehaviour
 
     void OnTriggerExit2D (Collider2D col)
     {
-        Debug.Log("Exit");
+
+    }
+
+
+    private void Unlock ()
+    {
+        SceneManager.LoadScene(LevelToLoad);
     }
 }
