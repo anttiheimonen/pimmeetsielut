@@ -99,6 +99,8 @@ public class PlayerController : MonoBehaviour
 
     public void DealDamage ()
     {
+        // TODO: This is not good solution for damage dealding if there will
+        // be more enemy types.
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackArea.position, attackRange, enemyLayer);
         foreach(Collider2D enemy in hitEnemies)
         {
