@@ -7,16 +7,13 @@ public class BossController : MonoBehaviour
 
     public GameObject tentacle;
     public int numberOfTentacles;
-    // private PolygonCollider2D pc2d;
     public Transform boss;
-    // private int tentacleAttackOffset;
+
+    public int health;
 
     // Start is called before the first frame update
     void Start()
     {
-        // pc2d = GetComponent<PolygonCollider2D>();
-        // tentacleAttackOffset = 1;
-        InvokeRepeating("DebugInfo", 4, 5);
         InvokeRepeating("TentacleAttack", 1, 5);
     }
 
@@ -24,6 +21,21 @@ public class BossController : MonoBehaviour
     void Update()
     {
 
+    }
+
+
+    public void TakeHit()
+    {
+        health--;
+        if (health <= 0)
+            Die();
+    }
+
+
+    private void Die()
+    {
+        Debug.Log("Bossi kuoli");
+        CancelInvoke();
     }
 
 

@@ -99,11 +99,13 @@ public class PlayerController : MonoBehaviour
 
     public void DealDamage ()
     {
-        // animator.SetBool("IsAttacking", false);
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackArea.position, attackRange, enemyLayer);
         foreach(Collider2D enemy in hitEnemies)
         {
-            enemy.GetComponent<EnemyController>().takeHit();
+            if (enemy.tag == "Boss")
+                enemy.GetComponent<BossController>().TakeHit();
+            else
+                enemy.GetComponent<EnemyController>().TakeHit();
         }
     }
 
@@ -137,7 +139,6 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("IsOnKnockback", true);
         Invoke("RemoveInvulnerable", InvulnerableDuration);
         UpdateHealthBar();
-
     }
 
 

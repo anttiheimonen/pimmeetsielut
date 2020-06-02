@@ -79,7 +79,7 @@ public class EnemyController : MonoBehaviour
     }
 
 
-    public void takeHit()
+    public void TakeHit()
     {
         currentHealth--;
 

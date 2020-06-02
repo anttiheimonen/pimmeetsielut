@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 96808513}
   - component: {fileID: 96808514}
   - component: {fileID: 96808512}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bossi
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -241,6 +241,7 @@ MonoBehaviour:
     type: 3}
   numberOfTentacles: 10
   boss: {fileID: 96808511}
+  health: 2
 --- !u!60 &96808514
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -355,6 +356,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7081403004374175878, guid: fea02362cb31b6bf097e451e51690008,
+        type: 3}
+      propertyPath: health
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7081403004374175878, guid: fea02362cb31b6bf097e451e51690008,
+        type: 3}
+      propertyPath: maxHealth
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7081403004374175879, guid: fea02362cb31b6bf097e451e51690008,
         type: 3}
       propertyPath: m_Name
