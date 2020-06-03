@@ -13,9 +13,6 @@ public class KeyController : MonoBehaviour
             return;
 
         col.GetComponent<PlayerController>().FoundKey();
-        Debug.Log("Pelaaja sai avaimen");
-
         Destroy(gameObject);
-
     }
 }

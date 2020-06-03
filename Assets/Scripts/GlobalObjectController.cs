@@ -8,11 +8,10 @@ public class GlobalObjectController : MonoBehaviour
 
     public int maxHealth;
     public int health;
-    // public float XP;
+    public int attackDamage;
 
     void Awake ()
     {
-        Debug.Log("Awake kutsuttu");
         if (Instance == null)
         {
             DontDestroyOnLoad(gameObject);
@@ -26,5 +25,8 @@ public class GlobalObjectController : MonoBehaviour
     }
 
     public void SetHealth(int health) => this.health = health;
+    public void SetAttackDamage(int damage) => this.attackDamage = damage;
+
+    public void DestroyInstance() => Destroy (gameObject);
 
 }

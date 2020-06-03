@@ -6,24 +6,35 @@ using UnityEngine.SceneManagement;
 public class DoorController : MonoBehaviour
 {
 
+    public bool locked;
     public int LevelToLoad;
     public Animator animator;
     private float animationDuration = 1.5f;
+    public AudioManager audioManager;
+
 
     void OnTriggerEnter2D (Collider2D col)
     {
-        if(!col.CompareTag("Player"))
-            return;
 
-        if (col.GetComponent<PlayerController>().HasKey())
-        {
-            animator.SetBool("HasKey", true);
-            Invoke("Unlock", animationDuration);
-        }
     }
 
     void OnTriggerStay2D (Collider2D col)
     {
+        PlayerController pc = col.GetComponent<PlayerController>();
+
+        if(!pc.CompareTag("Player"))
+            return;
+
+        if(!pc.UseDoor())
+            return;
+
+        if(locked && !pc.HasKey())
+            return;
+
+        if(locked)
+            Unlock();
+
+        Invoke("Travel", animationDuration);
 
     }
 
@@ -33,7 +44,15 @@ public class DoorController : MonoBehaviour
     }
 
 
-    private void Unlock ()
+    private void Unlock()
+    {
+        Debug.Log("unlockataan");
+        locked = false;
+        animator.SetBool("HasKey", true);
+        audioManager.Play("DoorOpen");
+    }
+
+    private void Travel ()
     {
         SceneManager.LoadScene(LevelToLoad);
     }

@@ -8,8 +8,11 @@ public class BossController : MonoBehaviour
     public GameObject tentacle;
     public int numberOfTentacles;
     public Transform boss;
+    public PolygonCollider2D pc2D;
 
     public int health;
+    public AudioManager audioManager;
+
 
     // Start is called before the first frame update
     void Start()
@@ -24,18 +27,30 @@ public class BossController : MonoBehaviour
     }
 
 
-    public void TakeHit()
+    public void TakeHit(int damage)
     {
-        health--;
-        if (health <= 0)
+        health = health - damage;
+        Debug.Log("Boss saa damagea " + damage);
+        Debug.Log("Bossin Life " + health);
+
+        if(health <= 0)
             Die();
+        else
+            audioManager.Play("BossTakesHit");
     }
 
 
     private void Die()
     {
-        Debug.Log("Bossi kuoli");
+        audioManager.Play("BossDies");
+        pc2D.enabled = false;
         CancelInvoke();
+    }
+
+
+    private void PlaySound(string sound)
+    {
+        audioManager.Play(sound);
     }
 
 

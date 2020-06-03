@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 466894895134117204}
   - component: {fileID: 466894895134117227}
   - component: {fileID: 466894895134117225}
-  m_Layer: 9
+  m_Layer: 12
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -184,8 +184,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -487540069
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 4723107735738678597, guid: 174209194dbf2fb44aef1ea1ba76a2f1,
     type: 3}
@@ -270,6 +270,7 @@ MonoBehaviour:
   InvulnerableDuration: 1
   knockbackDuration: 1
   healthBar: {fileID: 0}
+  audioManager: {fileID: 0}
 --- !u!95 &466894895134117225
 Animator:
   serializedVersion: 3

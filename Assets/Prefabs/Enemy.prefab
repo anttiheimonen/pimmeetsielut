@@ -146,7 +146,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71b0594629ca81000892056e0078e26b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 2
+  maxHealth: 6
   enemyState: 0
   attackArea: {fileID: 8700892225977962092}
   playerLayer:
@@ -157,8 +157,9 @@ MonoBehaviour:
   attackRange: 2.2
   attackDuration: 1
   cooldownDuration: 2.5
-  detectionArea: 2.5
+  detectionArea: 2.65
   maxAmmo: 4
+  audioManager: {fileID: 0}
 --- !u!95 &8700892225155633722
 Animator:
   serializedVersion: 3

@@ -18,6 +18,8 @@ public class EnemyController : MonoBehaviour
     public float detectionArea;   // When player is in detection area enemy attacks
     public int maxAmmo;
     int ammo;
+    public AudioManager audioManager;
+
 
 
 
@@ -41,6 +43,7 @@ public class EnemyController : MonoBehaviour
             enemyState = EnemyState.Attacking;
             ammo--;
             Invoke("AttackEnd", attackDuration);
+            audioManager.Play("EnemyAttack");
         }
 
         if (enemyState != EnemyState.Attacking)
@@ -79,14 +82,14 @@ public class EnemyController : MonoBehaviour
     }
 
 
-    public void TakeHit()
+    public void TakeHit(int damage)
     {
-        currentHealth--;
+        currentHealth = currentHealth - damage;
 
         if(currentHealth <= 0)
-        {
             Die();
-        }
+        else
+            audioManager.Play("EnemyTakesHit");
     }
 
 
@@ -98,6 +101,8 @@ public class EnemyController : MonoBehaviour
             enemyState = EnemyState.Dead;
             Debug.Log("Vihollinen kuoli");
             boxCollider2D.enabled = false;
+            audioManager.Play("EnemyDies");
+
         }
     }
 
@@ -105,6 +110,12 @@ public class EnemyController : MonoBehaviour
     private void Idle()
     {
         animator.SetBool("IsAttacking", false);
+    }
+
+
+    private void PlaySound(string sound)
+    {
+        audioManager.Play(sound);
     }
 
 

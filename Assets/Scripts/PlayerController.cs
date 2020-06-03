@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -26,8 +27,10 @@ public class PlayerController : MonoBehaviour
     // How long knocback lasts
     public float knockbackDuration;
     public HealthBar healthBar;
-
+    private int attackDamage;
     bool hasKey;
+    public AudioManager audioManager;
+    private bool wantsToUseDoor;
 
 
     void InputToMovement ()
@@ -36,6 +39,13 @@ public class PlayerController : MonoBehaviour
         {
             return;     // Player cannot be controlled
         }
+
+        // Up press means player wants to use door
+        if (Input.GetAxisRaw("Vertical") > 0.1f){
+            wantsToUseDoor = true;
+        }
+        else
+            wantsToUseDoor = false;
 
         if (Input.GetButtonDown("Fire1"))
         {
@@ -104,10 +114,11 @@ public class PlayerController : MonoBehaviour
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackArea.position, attackRange, enemyLayer);
         foreach(Collider2D enemy in hitEnemies)
         {
+            audioManager.Play("PlayerAttack");
             if (enemy.tag == "Boss")
-                enemy.GetComponent<BossController>().TakeHit();
+                enemy.GetComponent<BossController>().TakeHit(attackDamage);
             else
-                enemy.GetComponent<EnemyController>().TakeHit();
+                enemy.GetComponent<EnemyController>().TakeHit(attackDamage);
         }
     }
 
@@ -135,12 +146,14 @@ public class PlayerController : MonoBehaviour
         // Cancel possible attack invokes
         CancelInvoke("DealDamage");
         CancelInvoke("AttackEnd");
+        animator.SetBool("IsAttacking", false);
         currentHealth--;
-        // Debug.Log("Pelaaja sai osuman");
         IsInvulnerable = true;
         animator.SetBool("IsOnKnockback", true);
         Invoke("RemoveInvulnerable", InvulnerableDuration);
         UpdateHealthBar();
+        PlaySound("PlayerDamaged");
+
     }
 
 
@@ -149,7 +162,7 @@ public class PlayerController : MonoBehaviour
         playerState = PlayerState.Uncontrollable;
         StopMovement();
         Invoke("KnockbackEnd", knockbackDuration);
-        rbody.AddForce(new Vector2(-1, 1) * 5, ForceMode2D.Impulse);  // TODO: Should this be in FixedUpdate() ?
+        rbody.AddForce(new Vector2(-1, 1) * 5, ForceMode2D.Impulse);
         // rbody.AddForce(Vector3.up * 5, ForceMode2D.Impulse);
     }
 
@@ -166,19 +179,31 @@ public class PlayerController : MonoBehaviour
         playerState = PlayerState.Dead;
         animator.SetBool("IsDead", true);
         Debug.Log("Kuoli");
+        PlaySound("PlayerDeath");
+        Invoke("MoveToGameOverScene", 3);
     }
 
 
-    private void UseDoor()
+    private void MoveToGameOverScene()
     {
-
+            SceneManager.LoadScene(3);
     }
+
+
+    private void PlaySound(string sound)
+    {
+        audioManager.Play(sound);
+    }
+
+
+    public bool UseDoor() => wantsToUseDoor;
 
 
     private void RemoveInvulnerable() => IsInvulnerable = false;
 
 
     private bool PlayerIsAlive() => currentHealth > 0;
+
 
     private void StopMovement () => rbody.velocity = Vector2.zero;
 
@@ -198,6 +223,7 @@ public class PlayerController : MonoBehaviour
         IsInvulnerable = false;
         currentHealth = GlobalObjectController.Instance.health;
         maxHealth = GlobalObjectController.Instance.maxHealth;
+        attackDamage = GlobalObjectController.Instance.attackDamage;
         healthBar.SetMaxHealth(maxHealth);
         UpdateHealthBar();
         hasKey = false;
@@ -207,11 +233,13 @@ public class PlayerController : MonoBehaviour
     void OnDestroy()
     {
         SavePlayer();
-        Debug.Log("OnDestroy1");
     }
 
 
   public void FoundKey() => hasKey = true;
+
+
+  public void FoundPowerUp() => attackDamage++;
 
 
   public bool HasKey() => hasKey;
@@ -230,6 +258,7 @@ public class PlayerController : MonoBehaviour
     public void SavePlayer()
     {
         GlobalObjectController.Instance.SetHealth(currentHealth);
+        GlobalObjectController.Instance.SetAttackDamage(currentHealth);
     }
 
 
