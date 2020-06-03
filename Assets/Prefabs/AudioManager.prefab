@@ -1,0 +1,101 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8192408599966887470
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8192408599966887468}
+  - component: {fileID: 8192408599966887469}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8192408599966887468
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8192408599966887470}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5.043964, y: 8.811097, z: -4.2539062}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8192408599966887469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8192408599966887470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d788747a4742b2b0820b0e14bad7690, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: PlayerDeath
+    clip: {fileID: 8300000, guid: f03ca00748cc75c438092911536058b5, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: PlayerDamaged
+    clip: {fileID: 8300000, guid: 1734cebdf2bc02842a4652686c07cf90, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: DoorOpen
+    clip: {fileID: 8300000, guid: 24906271f0e89a58ba1ac01bbdd8dd11, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: PlayerAttack
+    clip: {fileID: 8300000, guid: b652f28a43b8026fb9f191c23fcb3702, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: EnemyAttack
+    clip: {fileID: 8300000, guid: bbaf6963093d68ff2b4335b26d7dd16d, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: EnemyTakesHit
+    clip: {fileID: 8300000, guid: 74304e65a9297107abe9f6c0128987c4, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: EnemyDies
+    clip: {fileID: 8300000, guid: cdc541f36678a95a789b16e2631884e8, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: BossTakesHit
+    clip: {fileID: 8300000, guid: 338876fa4348bfa0c8d46b362c43b0ae, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: BossAttack
+    clip: {fileID: 8300000, guid: 338876fa4348bfa0c8d46b362c43b0ae, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: BossDies
+    clip: {fileID: 8300000, guid: 338876fa4348bfa0c8d46b362c43b0ae, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: GameOverLaugh
+    clip: {fileID: 8300000, guid: 06b9f2f519907c53c8457c97c65d16ac, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
